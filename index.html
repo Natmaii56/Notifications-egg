@@ -12,7 +12,7 @@
   <div class="container">
     <header>
       <h1>⚡ FARM MONITOR</h1>
-      <p>ระบบเช็กสถานะการฟาร์มและแจ้งเตือนเรียลไทม์</p>
+      <p>พิมพ์ชื่อตัวละครเพื่อดูรายการแจ้งเตือน</p>
     </header>
 
     <div class="search-box">
@@ -20,7 +20,7 @@
     </div>
 
     <div id="characterList">
-      <!-- โค้ดจะดึงข้อมูลมาแสดงตรงนี้อัตโนมัติ -->
+      <!-- จะซ่อนไว้ก่อน จนกว่าจะพิมพ์ค้นหา -->
     </div>
   </div>
 
@@ -32,7 +32,6 @@
       try {
         const res = await fetch('data.json?t=' + new Date().getTime());
         allData = await res.json();
-        renderData(allData);
       } catch (err) {
         console.error("โหลดข้อมูลไม่ได้:", err);
       }
@@ -44,17 +43,11 @@
       container.innerHTML = '';
 
       if (data.length === 0) {
-        container.innerHTML = `<div class="no-result">❌ ไม่พบตัวละครนี้ในระบบ</div>`;
+        container.innerHTML = `<div class="no-result">❌ ไม่พบข้อมูลแจ้งเตือนของตัวละครนี้</div>`;
         return;
       }
 
       data.forEach(char => {
-        const statusMap = {
-          farming: '🟢 กำลังฟาร์ม',
-          idle: '🟡 ยืนเฉยๆ',
-          offline: '🔴 ออฟไลน์'
-        };
-
         const logsHTML = char.notifications.map(n => `
           <div class="log-item">
             <span class="log-time">${n.time}</span>
@@ -66,28 +59,31 @@
         card.className = 'card';
         card.innerHTML = `
           <div class="char-header">
-            <div class="char-name">${char.name} <span style="font-size: 0.8rem; color: var(--text-muted)">Lv.${char.level}</span></div>
-            <span class="badge ${char.status}">${statusMap[char.status]}</span>
+            <div class="char-name">👤 ${char.name}</div>
           </div>
-          <div class="char-info">
-            <div>📍 แมพ: <span>${char.location}</span></div>
-            <div>⏱️ อัปเดต: <span>${char.last_update}</span></div>
-          </div>
-          <div class="logs-title">🔔 บันทึกการแจ้งเตือนล่าสุด</div>
+          <div class="logs-title">🔔 รายการแจ้งเตือน</div>
           <div class="log-list">${logsHTML}</div>
         `;
         container.appendChild(card);
       });
     }
 
-    // ค้นหาตัวละครแบบพิมพ์ปุ๊บขึ้นปั๊บ
+    // ค้นหาตัวละคร (ต้องพิมพ์ก่อนถึงจะโชว์)
     function filterData() {
       const keyword = document.getElementById('searchInput').value.toLowerCase().trim();
+      const container = document.getElementById('characterList');
+
+      // ถ้าช่องค้นหาว่างเปล่า ให้ล้างหน้าจอออกทันที ไม่โชว์อะไรเลย
+      if (keyword === '') {
+        container.innerHTML = '';
+        return;
+      }
+
       const filtered = allData.filter(item => item.name.toLowerCase().includes(keyword));
       renderData(filtered);
     }
 
-    // โหลดข้อมูลครั้งแรกทันทีที่เปิดเว็บ
+    // โหลดข้อมูลมารอไว้ในระบบ
     loadData();
   </script>
 </body>
