@@ -1,0 +1,38 @@
+[
+  {
+    "id": "char_001",
+    "name": "ShadowNinja",
+    "level": 85,
+    "location": "ดันเจี้ยนชั้น 5 (Mage Tower)",
+    "status": "farming",
+    "last_update": "10 นาทีที่แล้ว",
+    "notifications": [
+      { "time": "21:00", "type": "warning", "message": "กระเป๋าใกล้เต็มแล้ว (88/100)" },
+      { "time": "20:45", "type": "success", "message": "ดร็อปไอเทมหายาก: ดาบมังกร +1" },
+      { "time": "19:30", "type": "info", "message": "เริ่มฟาร์มที่ดันเจี้ยนชั้น 5" }
+    ]
+  },
+  {
+    "id": "char_002",
+    "name": "DragonSlayer",
+    "level": 92,
+    "location": "เหมืองแร่สการ์เล็ต",
+    "status": "idle",
+    "last_update": "1 ชั่วโมงที่แล้ว",
+    "notifications": [
+      { "time": "18:12", "type": "danger", "message": "ยาน้ำหมด! ตัวละครหยุดฟาร์มอัตโนมัติ" },
+      { "time": "18:00", "type": "info", "message": "เปลี่ยนสถานที่ไปเหมืองแร่" }
+    ]
+  },
+  {
+    "id": "char_003",
+    "name": "HolyPriest",
+    "level": 78,
+    "location": "ป่าเวทมนตร์",
+    "status": "offline",
+    "last_update": "3 ชั่วโมงที่แล้ว",
+    "notifications": [
+      { "time": "16:00", "type": "info", "message": "ออกจากระบบเรียบร้อย" }
+    ]
+  }
+]
