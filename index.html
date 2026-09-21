@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Farm Monitor - ระบบติดตามตัวละคร</title>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>⚡ FARM MONITOR</h1>
+      <p>ระบบเช็กสถานะการฟาร์มและแจ้งเตือนเรียลไทม์</p>
+    </header>
+
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="🔍 พิมพ์ชื่อตัวละครเพื่อค้นหา..." oninput="filterData()">
+    </div>
+
+    <div id="characterList">
+      <!-- โค้ดจะดึงข้อมูลมาแสดงตรงนี้อัตโนมัติ -->
+    </div>
+  </div>
+
+  <script>
+    let allData = [];
+
+    // ดึงข้อมูลจาก data.json
+    async function loadData() {
+      try {
+        const res = await fetch('data.json?t=' + new Date().getTime());
+        allData = await res.json();
+        renderData(allData);
+      } catch (err) {
+        console.error("โหลดข้อมูลไม่ได้:", err);
+      }
+    }
+
+    // แสดงผล UI
+    function renderData(data) {
+      const container = document.getElementById('characterList');
+      container.innerHTML = '';
+
+      if (data.length === 0) {
+        container.innerHTML = `<div class="no-result">❌ ไม่พบตัวละครนี้ในระบบ</div>`;
+        return;
+      }
+
+      data.forEach(char => {
+        const statusMap = {
+          farming: '🟢 กำลังฟาร์ม',
+          idle: '🟡 ยืนเฉยๆ',
+          offline: '🔴 ออฟไลน์'
+        };
+
+        const logsHTML = char.notifications.map(n => `
+          <div class="log-item">
+            <span class="log-time">${n.time}</span>
+            <div class="log-msg ${n.type}">${n.message}</div>
+          </div>
+        `).join('');
+
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="char-header">
+            <div class="char-name">${char.name} <span style="font-size: 0.8rem; color: var(--text-muted)">Lv.${char.level}</span></div>
+            <span class="badge ${char.status}">${statusMap[char.status]}</span>
+          </div>
+          <div class="char-info">
+            <div>📍 แมพ: <span>${char.location}</span></div>
+            <div>⏱️ อัปเดต: <span>${char.last_update}</span></div>
+          </div>
+          <div class="logs-title">🔔 บันทึกการแจ้งเตือนล่าสุด</div>
+          <div class="log-list">${logsHTML}</div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // ค้นหาตัวละครแบบพิมพ์ปุ๊บขึ้นปั๊บ
+    function filterData() {
+      const keyword = document.getElementById('searchInput').value.toLowerCase().trim();
+      const filtered = allData.filter(item => item.name.toLowerCase().includes(keyword));
+      renderData(filtered);
+    }
+
+    // โหลดข้อมูลครั้งแรกทันทีที่เปิดเว็บ
+    loadData();
+  </script>
+</body>
+</html>
