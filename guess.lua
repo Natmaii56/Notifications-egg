@@ -1,3 +1,4 @@
+getgenv().DiscordID = "1384137283136913418"
 local Library
 
 do
