@@ -1038,16 +1038,15 @@ do -- Elimination
             local idx = Util.findCorrectIndex(State.choices)
 
             if Remotes.submitAnswerElim then
+                -- Submit exactly once. Do not also fire the GUI button:
+                -- its click handler may submit a different index and override this answer.
                 Remotes.submitAnswerElim:FireServer(idx)
-                Util.notify("Answered ==> " .. idx .. "\n" .. State.songName)
+                Util.notify("Submitted answer #" .. idx .. "\n" .. State.songName)
+            else
+                Util.notify("Cannot answer: SubmitAnswerEliminationMode remote not found")
             end
 
-            local button = State.elimButtons[idx]
-            if button and firesignal then
-                pcall(firesignal, button.MouseButton1Click)
-            end
-
-            Util.log("Elimination: " .. idx)
+            Util.log("Elimination submitted: " .. idx)
         end)
     end
 
